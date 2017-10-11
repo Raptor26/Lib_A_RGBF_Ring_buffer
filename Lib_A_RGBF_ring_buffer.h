@@ -74,7 +74,7 @@ extern void RGBF_RingBuff_In(RGBF_ring_buff_t *ringBuff,
         void *pValue, 
         size_t bytesNumb);
 extern void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
-        uint8_t *pArr,
+        void *pArr,
         size_t lenght);
 extern size_t RGBF_RingBuffCheckDataCnt(RGBF_ring_buff_t *ringBuff);
 extern void RGBF_ResetRingBuff(RGBF_ring_buff_t *ringBuff,
