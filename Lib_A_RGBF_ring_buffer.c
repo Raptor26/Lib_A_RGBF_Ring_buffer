@@ -34,54 +34,43 @@
 //==============================================================================
 
 /**
- *  @brief  Функция выполняет запись массива байтов в кольцевой буфер;
- *  @param  *ringBuff:  Указатель на структуру, содержащую указатели для работы 
- *                      с кольцевым буфером;
- *  @param  *pData: Указатель на 0-й элемент массива данных, который необходимо 
- *                  записать в кольцевой буфер;
- *  @param  cnt:    Количество байт, которое необходимо записать в кольцевой буфер;
- */
-void RGBF_RingBuffInArr(RGBF_ring_buff_t *ringBuff,
-                        uint8_t *pData,
-                        size_t cnt)
-{
-    size_t i;
-    for (i = 0; i < cnt; i++)
-    {
-        RGBF_RingBuff_In(ringBuff, *pData);
-        pData++;
-    }
-}
-
-/**
  *  @brief  Функция выполняет запись байта информации в кольцевой буфер;
  *  @param  *ringBuff:  Указатель на структуру, содержащую указатели для работы 
  *                      с кольцевым буфером;
- *  @param  value:  Байт данных, который необходимо записать в кольцевой буфер;
+ *  @param  *value: Указатель на байты данных, которые необходимо записать в кольцевой буфер;
+ *  @param  bytesNumb:  Количество байт, которое необходимо записать в кольцевой буфер
  */
 void RGBF_RingBuff_In(RGBF_ring_buff_t *ringBuff,
-                     uint8_t value)
+                      void *pValue,
+                      size_t bytesNumb)
 {
-    if (ringBuff->pWrite == ringBuff->endBuff) //   Если указатель указывает на 
-        //                                          адрес конца буфера;
+    size_t i;
+    for (i = 0; i < bytesNumb; i++)
     {
-        *ringBuff->pWrite = value; //               Записываем по указанному адресу 
-        //                                          (в конец буфера) данные;
-        ringBuff->pWrite = ringBuff->startBuff; //  Переносим указатель на адрес начала буфера;  
-    }
-    else if (ringBuff->pWrite > ringBuff->endBuff) //   Если "вылетели" за 
+        if (ringBuff->pWrite == ringBuff->endBuff) //   Если указатель указывает на 
+            //                                          адрес конца буфера;
+        {
+
+            *ringBuff->pWrite = *(char*) pValue++; //   Записываем по указанному адресу 
+            //                                          (в конец буфера) данные и инкрементируем 
+            //                                          указатель на переменную, которую 
+            //                                          необходимо записать в буфер;
+            ringBuff->pWrite = ringBuff->startBuff; //  Переносим указатель на адрес начала буфера;  
+        }
+        else if (ringBuff->pWrite > ringBuff->endBuff) //   Если "вылетели" за 
             //                                          пределы массива буфера
-    {
-        ringBuff->pWrite = ringBuff->startBuff; //  Переносим указатель на адрес начала буфера;  
-        *ringBuff->pWrite++ = value; //             Записываем по указанному адресу 
-        //                                          данные и инкрементируем указатель на то, 
-        //                                          куда будем записывать данные в 
-        //                                          следующей итерации;
-    }
-    else
-    {
-        *ringBuff->pWrite++ = value; //             Записываем по указанному адресу 
-        //                                          данные и инкрементируем адрес буфера;
+        {
+            ringBuff->pWrite = ringBuff->startBuff; //  Переносим указатель на адрес начала буфера;  
+            *ringBuff->pWrite++ = *(char*) pValue++; // Записываем по указанному адресу 
+            //                                          данные и инкрементируем указатель на то, 
+            //                                          куда будем записывать данные в 
+            //                                          следующей итерации;
+        }
+        else
+        {
+            *ringBuff->pWrite++ = *(char*) pValue++; // Записываем по указанному адресу 
+            //                                          данные и инкрементируем адрес буфера;
+        }
     }
 }
 
@@ -94,8 +83,8 @@ void RGBF_RingBuff_In(RGBF_ring_buff_t *ringBuff,
  *  @param  lenght: Количество байт, которое необходимо скопировать из кольцевого буфера;
  */
 void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
-                      uint8_t *pArr,
-                      size_t lenght)
+                       void *pArr,
+                       size_t lenght)
 {
     size_t i;
     for (i = 0; i < lenght; i++)
@@ -103,7 +92,7 @@ void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
         if (ringBuff->pRead == ringBuff->endBuff) //    Если указатель указывает 
             //                                          на адрес конца буфера;
         {
-            *pArr++ = *ringBuff->pRead; //      Записываем в массив данные из буфера, 
+            *(char*) pArr++ = *ringBuff->pRead; //      Записываем в массив данные из буфера, 
             //                                  находящиеся по указанному адресу и 
             //                                  инкрементируем адрес массива, 
             //                                  в который записали данные;
@@ -113,7 +102,7 @@ void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
             //                                              пределы массива буфера
         {
             ringBuff->pRead = ringBuff->startBuff; //   Переносим указатель на адрес начала буфера;
-            *pArr++ = *ringBuff->pRead++; //        Записываем в массив данные из 
+            *(char*) pArr++ = *ringBuff->pRead++; //    Записываем в массив данные из 
             //                                      буфера и инкрементируем указатель 
             //                                      на массив в который записываем 
             //                                      данные и указатель на то, откуда 
@@ -121,7 +110,7 @@ void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
         }
         else
         {
-            *pArr++ = *ringBuff->pRead++; //        Записываем в массив данные из 
+            *(char*) pArr++ = *ringBuff->pRead++; //    Записываем в массив данные из 
             //                                      буфера и инкрементируем указатель 
             //                                      на массив в который записываем 
             //                                      данные и указатель на то, откуда 
