@@ -44,7 +44,7 @@ typedef struct {
     //                              записываться данные;
     uint8_t *pRead; //              Указатель на место в памяти откуда будут 
     //                              считываться данные;
-} RGBF_ring_buff_t; /*  Структура, содержащая указатели для работы с кольцевым 
+} RGBF_ring_buf_s; /*  Структура, содержащая указатели для работы с кольцевым 
                      *  буфером;
                      * 
                      *  Пример инициализации массива кольцевого буфера и 
@@ -67,18 +67,17 @@ typedef struct {
 
 //******************************************************************************
 //  Секция прототипов глобальных функций
-extern void RGBF_RingBuffInArr(RGBF_ring_buff_t *ringBuff,
+extern void RGBF_RingBuffInArr(RGBF_ring_buf_s *ringBuff,
         uint8_t *pData,
         size_t cnt);
-extern void RGBF_RingBuff_In(RGBF_ring_buff_t *ringBuff,
-        void *pValue, 
+extern void RGBF_RingBuff_In(RGBF_ring_buf_s *ringBuff,
+        void *pValue,
         size_t bytesNumb);
-extern void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
+extern void RGBF_RingBuff_Out(RGBF_ring_buf_s *ringBuff,
         void *pArr,
         size_t lenght);
-extern size_t RGBF_RingBuffCheckDataCnt(RGBF_ring_buff_t *ringBuff);
-extern void RGBF_ResetRingBuff(RGBF_ring_buff_t *ringBuff,
-        uint8_t *pArr);
+extern size_t RGBF_RingBuffCheckDataCnt(RGBF_ring_buf_s *ringBuff);
+extern void RGBF_ResetRingBuff(RGBF_ring_buf_s *ringBuff);
 //******************************************************************************
 
 

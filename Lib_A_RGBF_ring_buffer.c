@@ -40,7 +40,7 @@
  *  @param  *value: Указатель на байты данных, которые необходимо записать в кольцевой буфер;
  *  @param  bytesNumb:  Количество байт, которое необходимо записать в кольцевой буфер
  */
-void RGBF_RingBuff_In(RGBF_ring_buff_t *ringBuff,
+void RGBF_RingBuff_In(RGBF_ring_buf_s *ringBuff,
                       void *pValue,
                       size_t bytesNumb)
 {
@@ -51,11 +51,10 @@ void RGBF_RingBuff_In(RGBF_ring_buff_t *ringBuff,
             //                                          адрес конца буфера;
         {
 
-            *ringBuff->pWrite = *(char*) pValue++; //   Записываем по указанному адресу 
+            *ringBuff->pWrite++ = *(char*) pValue++; // Записываем по указанному адресу 
             //                                          (в конец буфера) данные и инкрементируем 
             //                                          указатель на переменную, которую 
-            //                                          необходимо записать в буфер;
-            ringBuff->pWrite = ringBuff->startBuff; //  Переносим указатель на адрес начала буфера;  
+            //                                          необходимо записать в буфер;  
         }
         else if (ringBuff->pWrite > ringBuff->endBuff) //   Если "вылетели" за 
             //                                          пределы массива буфера
@@ -82,7 +81,7 @@ void RGBF_RingBuff_In(RGBF_ring_buff_t *ringBuff,
  *                  из кольцевого буфера;
  *  @param  lenght: Количество байт, которое необходимо скопировать из кольцевого буфера;
  */
-void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
+void RGBF_RingBuff_Out(RGBF_ring_buf_s *ringBuff,
                        void *pArr,
                        size_t lenght)
 {
@@ -92,11 +91,10 @@ void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
         if (ringBuff->pRead == ringBuff->endBuff) //    Если указатель указывает 
             //                                          на адрес конца буфера;
         {
-            *(char*) pArr++ = *ringBuff->pRead; //      Записываем в массив данные из буфера, 
+            *(char*) pArr++ = *ringBuff->pRead++; //      Записываем в массив данные из буфера, 
             //                                  находящиеся по указанному адресу и 
             //                                  инкрементируем адрес массива, 
-            //                                  в который записали данные;
-            ringBuff->pRead = ringBuff->startBuff; //   Переносим указатель на адрес начала буфера;
+            //                                  в который записали данные;           
         }
         else if (ringBuff->pRead > ringBuff->endBuff) //    Если "вылетели" за 
             //                                              пределы массива буфера
@@ -126,7 +124,7 @@ void RGBF_RingBuff_Out(RGBF_ring_buff_t *ringBuff,
  *                      с кольцевым буфером;
  *  @return Количество необработаных байт кольцевого буфера;
  */
-size_t RGBF_RingBuffCheckDataCnt(RGBF_ring_buff_t *ringBuff)
+size_t RGBF_RingBuffCheckDataCnt(RGBF_ring_buf_s *ringBuff)
 {
     size_t temp1, temp2;
     if (ringBuff->pWrite >= ringBuff->pRead) // Если указатель на запись больше 
@@ -155,11 +153,10 @@ size_t RGBF_RingBuffCheckDataCnt(RGBF_ring_buff_t *ringBuff)
  *                      с кольцевым буфером;
  *  @param  *pArr:  Указатель на 0-й элемент массива кольцевого буфера;
  */
-void RGBF_ResetRingBuff(RGBF_ring_buff_t *ringBuff,
-                        uint8_t *pArr)
+void RGBF_ResetRingBuff(RGBF_ring_buf_s *ringBuff)
 {
-    ringBuff->pRead = pArr;
-    ringBuff->pWrite = pArr;
+    ringBuff->pRead = ringBuff->startBuff;
+    ringBuff->pWrite = ringBuff->startBuff;
 }
 //==============================================================================
 //******************************************************************************
