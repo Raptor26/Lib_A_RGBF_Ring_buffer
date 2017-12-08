@@ -55,7 +55,7 @@ void RGBF_CopyDataInBuf(RGBF_ring_buf_s *pBufStruct,
         {
             //  Записываем по указанному адресу (в конец буфера) данные и 
             //  инкрементируем указатели;           
-            *pBufStruct->pWriteDataInBuf++ = *(char*) pByteToWriteInBuf++;
+            *pBufStruct->pWriteDataInBuf++ = *(char*) pByteToWriteInBuf;
         }
             //  Если "вылетели" за пределы массива буфера:
         else if (pBufStruct->pWriteDataInBuf > pBufStruct->pEndBuf)
@@ -65,14 +65,16 @@ void RGBF_CopyDataInBuf(RGBF_ring_buf_s *pBufStruct,
 
             //  Записываем по указанному адресу (в конец буфера) данные и 
             //  инкрементируем указатели;       
-            *pBufStruct->pWriteDataInBuf++ = *(char*) pByteToWriteInBuf++;
+            *pBufStruct->pWriteDataInBuf++ = *(char*) pByteToWriteInBuf;
         }
         else
         {
             //  Записываем по указанному адресу (в конец буфера) данные и 
             //  инкрементируем указатели;        
-            *pBufStruct->pWriteDataInBuf++ = *(char*) pByteToWriteInBuf++;
+            *pBufStruct->pWriteDataInBuf++ = *(char*) pByteToWriteInBuf;
         }
+        
+        pByteToWriteInBuf++;
     }
 }
 
@@ -131,12 +133,6 @@ size_t RGBF_num_CheckDataNum(RGBF_ring_buf_s *pBufStruct)
     if (pBufStruct->pWriteDataInBuf >= pBufStruct->pReadDataFromBuf)
     {
         return (pBufStruct->pWriteDataInBuf - pBufStruct->pReadDataFromBuf);
-    }
-        //  Если указатель на запись данных в массив совпадает с указателем на 
-        //  чтение данных из массива:
-    else if (pBufStruct->pWriteDataInBuf == pBufStruct->pReadDataFromBuf)
-    {
-        return 0;
     }
         // Если указатель на запись меньше чем указатель на чтение (т.е. указатель 
         // на запись "перешагнул" через конец буфера):
