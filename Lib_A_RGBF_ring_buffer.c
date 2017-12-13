@@ -50,8 +50,9 @@ void RGBF_CopyDataInBuf(RGBF_ring_buf_s *pBufStruct,
     size_t i;
     for (i = 0; i < lenght; i++)
     {
+        //  Прединкремент указателя на запись (перед проверкой "вылета" за пределы массива);
         *pBufStruct->pWriteDataInBuf++;
-        
+
         //  Если указатель указывает на адрес конца буфера:
         if (pBufStruct->pWriteDataInBuf == pBufStruct->pEndBuf)
         {
@@ -94,29 +95,28 @@ void RGBF_CopyDataOutBuf(RGBF_ring_buf_s *pBufStruct,
     size_t i;
     for (i = 0; i < lenght; i++)
     {
-        *pBufStruct->pReadDataFromBuf++;
-        
         //  //  Если указатель указывает на адрес конца буфера:
         if (pBufStruct->pReadDataFromBuf == pBufStruct->pEndBuf)
         {
             //  Записываем по указанному адресу данные из буфера и инкрементируем 
             //  указатели;
-            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf;
+            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf++;
         }
             //  Если "вылетели" за пределы массива буфера:
         else if (pBufStruct->pReadDataFromBuf > pBufStruct->pEndBuf)
         {
             //  Переносим указатель на адрес начала буфера;  
             pBufStruct->pReadDataFromBuf = pBufStruct->pBeginBuf;
+            
             //  Записываем по указанному адресу данные из буфера и инкрементируем 
             //  указатели;
-            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf;
+            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf++;
         }
         else
         {
             //  Записываем по указанному адресу данные из буфера и инкрементируем 
             //  указатели;
-            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf;
+            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf++;
         }
     }
 }
@@ -130,7 +130,6 @@ void RGBF_CopyDataOutBuf(RGBF_ring_buf_s *pBufStruct,
  */
 size_t RGBF_num_CheckDataNum(RGBF_ring_buf_s *pBufStruct)
 {
-
     //  Если указатель на запись больше чем указатель на чтение:
     if (pBufStruct->pWriteDataInBuf >= pBufStruct->pReadDataFromBuf)
     {
