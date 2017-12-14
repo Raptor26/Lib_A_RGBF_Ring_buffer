@@ -50,31 +50,15 @@ void RGBF_CopyDataInBuf(RGBF_ring_buf_s *pBufStruct,
     size_t i;
     for (i = 0; i < lenght; i++)
     {
-        //  Прединкремент указателя на запись (перед проверкой "вылета" за пределы массива);
-        *pBufStruct->pWriteDataInBuf++;
-
-        //  Если указатель указывает на адрес конца буфера:
-        if (pBufStruct->pWriteDataInBuf == pBufStruct->pEndBuf)
-        {
-            //  Записываем по указанному адресу (в конец буфера) данные и 
-            //  инкрементируем указатели;           
-            *pBufStruct->pWriteDataInBuf = *(char*) pByteToWriteInBuf++;
-        }
-            //  Если "вылетели" за пределы массива буфера:
-        else if (pBufStruct->pWriteDataInBuf > pBufStruct->pEndBuf)
+        //  Записываем по указанному адресу (в конец буфера) данные и 
+        //  инкрементируем указатели;
+        *pBufStruct->pWriteDataInBuf++ = *(char*) pByteToWriteInBuf++;
+        
+        //  Если "вылетели" за пределы массива буфера:
+        if (pBufStruct->pWriteDataInBuf > pBufStruct->pEndBuf)
         {
             //  Переносим указатель на адрес начала буфера;  
             pBufStruct->pWriteDataInBuf = pBufStruct->pBeginBuf;
-
-            //  Записываем по указанному адресу (в конец буфера) данные и 
-            //  инкрементируем указатели;       
-            *pBufStruct->pWriteDataInBuf = *(char*) pByteToWriteInBuf++;
-        }
-        else
-        {
-            //  Записываем по указанному адресу (в конец буфера) данные и 
-            //  инкрементируем указатели;        
-            *pBufStruct->pWriteDataInBuf = *(char*) pByteToWriteInBuf++;
         }
     }
 }
@@ -95,28 +79,15 @@ void RGBF_CopyDataOutBuf(RGBF_ring_buf_s *pBufStruct,
     size_t i;
     for (i = 0; i < lenght; i++)
     {
-        //  //  Если указатель указывает на адрес конца буфера:
-        if (pBufStruct->pReadDataFromBuf == pBufStruct->pEndBuf)
-        {
-            //  Записываем по указанному адресу данные из буфера и инкрементируем 
-            //  указатели;
-            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf++;
-        }
-            //  Если "вылетели" за пределы массива буфера:
-        else if (pBufStruct->pReadDataFromBuf > pBufStruct->pEndBuf)
+        //  Записываем по указанному адресу данные из буфера и инкрементируем 
+        //  указатели;
+        *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf++;
+        
+        //  Если "вылетели" за пределы массива буфера:
+        if (pBufStruct->pReadDataFromBuf > pBufStruct->pEndBuf)
         {
             //  Переносим указатель на адрес начала буфера;  
             pBufStruct->pReadDataFromBuf = pBufStruct->pBeginBuf;
-            
-            //  Записываем по указанному адресу данные из буфера и инкрементируем 
-            //  указатели;
-            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf++;
-        }
-        else
-        {
-            //  Записываем по указанному адресу данные из буфера и инкрементируем 
-            //  указатели;
-            *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf++;
         }
     }
 }
