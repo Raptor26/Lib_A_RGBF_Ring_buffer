@@ -113,7 +113,10 @@ size_t RGBF_num_CheckDataNum(RGBF_ring_buf_s *pBufStruct)
         size_t bytesNum1, BytesNum2;
         bytesNum1 = pBufStruct->pEndBuf - pBufStruct->pReadDataFromBuf;
         BytesNum2 = pBufStruct->pWriteDataInBuf - pBufStruct->pBeginBuf;
-        return (bytesNum1 + BytesNum2);
+        
+        //  `+1` взялся из-за того, что байт на который указывает "pBufStruct->pWriteDataInBuf",
+        //  тоже должен учитываться;
+        return (bytesNum1 + BytesNum2 + 1);
     }
 }
 
