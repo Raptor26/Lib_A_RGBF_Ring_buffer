@@ -13,7 +13,6 @@
 /*==== |Begin| --> Секция - "C libraries" ====================================*/
 #include <stdint.h>
 #include <stdio.h>
-#include <stdbool.h>
 /*==== |End  | <-- Секция - "C libraries" ====================================*/
 
 /*==== |Begin| --> Секция - "MK peripheral libraries" ========================*/
@@ -51,11 +50,11 @@ typedef struct
 
 /*#### |Begin| --> Секция - "Прототипы глобальных функций" ###################*/
 extern void
-RGBF_InitStruct(
+RGBF_StructInit(
 	rbgf_buff_pointers_init_s *pBuffInit_s);
 
 extern void
-RGBF_InitBuff(
+RGBF_Init(
 	rgbf_buff_pointers_s        *pBuff_s,
 	rbgf_buff_pointers_init_s   *pBuffInit_s);
 

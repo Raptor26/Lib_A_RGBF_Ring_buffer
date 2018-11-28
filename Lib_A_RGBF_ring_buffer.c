@@ -21,7 +21,6 @@
 
 
 /*#### |Begin| --> Секция - "Прототипы локальных функций" ####################*/
-
 /*#### |End  | <-- Секция - "Прототипы локальных функций" ####################*/
 
 
@@ -31,12 +30,14 @@
  * @author    Mickle Isaev
  * @date      28-ноя-2018
  *
- * @brief    { function_description }
+ * @brief    Функция сбрасывает поля структуры "rbgf_buff_pointers_init_s"
+ *           в значения по умолчанию
  *
- * @param    pBuffInit_s    Буфер инициализирует s
+ * @param[out]  *pBuffInit_s:   Указатель на инициализирующую структуру кольцевого буфера
+ * @return   None
  */
 void
-RGBF_InitStruct(
+RGBF_StructInit(
 	rbgf_buff_pointers_init_s *pBuffInit_s)
 {
 	pBuffInit_s->buffSize   = 0u;
@@ -47,13 +48,15 @@ RGBF_InitStruct(
  * @author    Mickle Isaev
  * @date      28-ноя-2018
  *
- * @brief    { function_description }
+ * @brief    Функция выполняет инициализацию структуры кольцевого буфера
  *
- * @param    pBuff_s        Буфер s
- * @param    pBuffInit_s    Буфер инициализирует s
+ * @param[out]  *pBuff_s:       Указатель на структуру кольцевого буфера
+ * @param[in]   *pBuffInit_s:   Указатель на инициализирующую структуру
+ *                              кольцевого буфера
+ * @return  None
  */
 void
-RGBF_InitBuff(
+RGBF_Init(
 	rgbf_buff_pointers_s        *pBuff_s,
 	rbgf_buff_pointers_init_s   *pBuffInit_s)
 {
@@ -67,11 +70,13 @@ RGBF_InitBuff(
  * @author    Mickle Isaev
  * @date      28-ноя-2018
  *
- * @brief    { function_description }
+ * @brief    Функция выполняет запись в кольцевой буфер
  *
- * @param        pBuff_s       Буфер s
- * @param        pWriteData    Данные записи
- * @param[in]    cnt           Счет
+ * @param[in,out]   *pBuff_s:       Указатель на структуру кольцевого буфера
+ * @param[in]       *pWriteData:    Указатель на область памяти, с которой будут
+ *                                  записаны данные в кольцевой буфер
+ * @param[in]   cnt:    Количество байт, которое будет записано в кольцевой буфер
+ * @return  None
  */
 void
 RGBF_WriteInBuf(
@@ -96,11 +101,13 @@ RGBF_WriteInBuf(
  * @author    Mickle Isaev
  * @date      28-ноя-2018
  *
- * @brief    { function_description }
+ * @brief    Функция выполняет чтение из кольцевого буфера
  *
- * @param        pBuff_s      Буфер s
- * @param        pReadData    Чтение данных
- * @param[in]    cnt          Счет
+ * @param[in,out]   *pBuff_s:       Указатель на структуру кольцевого буфера
+ * @param[in]       *pWriteData:    Указатель на область памяти, с которой будут
+ *                                  записаны данные в кольцевой буфер
+ * @param[in]   cnt:    Количество байт, которое будет считано из буфера
+ * @return  None
  */
 void
 RGBF_ReadFromBuf(
@@ -122,27 +129,25 @@ RGBF_ReadFromBuf(
  * @author    Mickle Isaev
  * @date      28-ноя-2018
  *
- * @brief    { function_description }
+ * @brief   Функция возвращает адрес крайнего байта данных, записанного в кольцевой буфер
  *
- * @param    pBuff_s    Буфер s
+ * @param[in]  *pBuff_s:       Указатель на структуру кольцевого буфера
  *
- * @return    { description_of_the_return_value }
+ * @return    Указатель на область памяти, в которой содержатся крайний
+ *            байт данных буфера
  */
 void*
 RGBF_GetLastFromBuf(
 	rgbf_buff_pointers_s *pBuff_s)
 {
-	/* Проверка вылета за предела буфера  */
-	__RGBF_CheckWriteBufBeyond(pBuff_s);
-
-	if (pBuff_s->pWrite == pBuff_s->pStartBuff)
-	{
-		return (pBuff_s->pEndBuff);
-	}
-	else
-	{
-		return (pBuff_s->pWrite - 1U);
-	}
+	// if (pBuff_s->pWrite == pBuff_s->pStartBuff)
+	// {
+	//  return (pBuff_s->pEndBuff);
+	// }
+	// else
+	// {
+	return (pBuff_s->pWrite - 1U);
+	// }
 }
 
 
@@ -150,11 +155,11 @@ RGBF_GetLastFromBuf(
  * @author    Mickle Isaev
  * @date      28-ноя-2018
  *
- * @brief    { function_description }
+ * @brief    Функция находит количество необработанных байт
  *
- * @param    pBuff_s    Буфер s
+ * @param[in]   *pBuff_s:       Указатель на структуру кольцевого буфера
  *
- * @return    { description_of_the_return_value }
+ * @return   Количество байт в кольцевом буфере
  */
 size_t
 RGBF_GetCntDataInBuf(
@@ -170,7 +175,6 @@ RGBF_GetCntDataInBuf(
 		return ((pBuff_s->pEndBuff - pBuff_s->pRead + 1U)
 				+ (pBuff_s->pWrite - pBuff_s->pStartBuff));
 	}
-
 }
 /*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
 
