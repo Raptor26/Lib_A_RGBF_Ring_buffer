@@ -1,140 +1,207 @@
-/** 
- * File:   Lib_A_RGBF_ring_buffer.c
- * Author: Isaev
+/**
+ * @file    %<%NAME%>%.%<%EXTENSION%>%
+ * @author  %<%USER%>%
+ * @version
+ * @date    %<%DATE%>%, %<%TIME%>%
+ * @brief
+ */
+
+
+/*#### |Begin| --> Секция - "Include" ########################################*/
+#include "Lib_A_RGBF_ring_buffer.h"
+/*#### |End  | <-- Секция - "Include" ########################################*/
+
+
+/*#### |Begin| --> Секция - "Глобальные переменные" ##########################*/
+/*#### |End  | <-- Секция - "Глобальные переменные" ##########################*/
+
+
+/*#### |Begin| --> Секция - "Локальные переменные" ###########################*/
+/*#### |End  | <-- Секция - "Локальные переменные" ###########################*/
+
+
+/*#### |Begin| --> Секция - "Прототипы локальных функций" ####################*/
+
+/*#### |End  | <-- Секция - "Прототипы локальных функций" ####################*/
+
+
+/*#### |Begin| --> Секция - "Описание глобальных функций" ####################*/
+
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      28-ноя-2018
  *
- * Created on 8 октября 2017 г., 19:45
+ * @brief    { function_description }
+ *
+ * @param    pBuffInit_s    Буфер инициализирует s
  */
-
-//******************************************************************************
-//  Секция include: здесь подключается заголовочный файл к модулю
-//          Lib_A_RGBF_ring_buffer.h
-#include   "Lib_A_RGBF_ring_buffer.h"
-//******************************************************************************
-
-
-//******************************************************************************
-//------------------------------------------------------------------------------
-//  Глобальные переменные
-//------------------------------------------------------------------------------
-
-
-//------------------------------------------------------------------------------
-//  Локальные переменные
-//------------------------------------------------------------------------------
-//******************************************************************************
-
-
-//******************************************************************************
-//  Секция прототипов локальных функций
-//******************************************************************************
-
-
-//******************************************************************************
-//  Секция описания функций (сначала глобальных, потом локальных)
-//==============================================================================
-
-/**
- *  @brief  Функция выполняет запись заданного количества байтов в кольцевой буфер;
- *  @param  *pBufStruct:    Указатель на структуру, содержащую указатели для
- *                          работы с кольцевым буфером;
- *  @param  *pByteToWriteInBuf: Указатель на байты данных, которые необходимо 
- *                              записать в кольцевой буфер;
- *  @param  lenght: Количество байт, которое необходимо записать в кольцевой буфер;
- *  @warning    Следует первое условие "if (pBufPointsStruct->pWriteDataInBuf == pBufPointsStruct->endBuf)"
- *             заменить "if (pBufPointsStruct->pWriteDataInBuf <= pBufPointsStruct->endBuf)" а крайнее else убрать;
- */
-void RGBF_CopyDataInBuf(RGBF_ring_buf_s *pBufStruct,
-                        void *pByteToWriteInBuf,
-                        size_t lenght)
+void
+RGBF_InitStruct(
+	rbgf_buff_pointers_init_s *pBuffInit_s)
 {
-    size_t i;
-    for (i = 0; i < lenght; i++)
-    {
-        //  Записываем по указанному адресу (в конец буфера) данные и 
-        //  инкрементируем указатели;
-        *pBufStruct->pWriteDataInBuf++ = *(char*) pByteToWriteInBuf++;
-        
-        //  Если "вылетели" за пределы массива буфера:
-        if (pBufStruct->pWriteDataInBuf > pBufStruct->pEndBuf)
-        {
-            //  Переносим указатель на адрес начала буфера;  
-            pBufStruct->pWriteDataInBuf = pBufStruct->pBeginBuf;
-        }
-    }
+	pBuffInit_s->buffSize   = 0u;
+	pBuffInit_s->pStartBuff = 0u;
 }
 
-/**
- *  @brief  Функция выполяет копирование данных из кольцевого буфера;
- *  @param  *pBufStruct:    Указатель на структуру, содержащую указатели для работы 
- *                         с кольцевым буфером;
- *  @param  *pArrToWriteFromBuf:    Указатель на массив данных, куда необходимо 
- *                                  скопировать данные  из кольцевого буфера;
- *  @param  lenght: Количество байт, которое необходимо скопировать из кольцевого 
- *                  буфера;
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      28-ноя-2018
+ *
+ * @brief    { function_description }
+ *
+ * @param    pBuff_s        Буфер s
+ * @param    pBuffInit_s    Буфер инициализирует s
  */
-void RGBF_CopyDataOutBuf(RGBF_ring_buf_s *pBufStruct,
-                         void *pArrToWriteFromBuf,
-                         size_t lenght)
+void
+RGBF_InitBuff(
+	rgbf_buff_pointers_s        *pBuff_s,
+	rbgf_buff_pointers_init_s   *pBuffInit_s)
 {
-    size_t i;
-    for (i = 0; i < lenght; i++)
-    {
-        //  Записываем по указанному адресу данные из буфера и инкрементируем 
-        //  указатели;
-        *(char*) pArrToWriteFromBuf++ = *pBufStruct->pReadDataFromBuf++;
-        
-        //  Если "вылетели" за пределы массива буфера:
-        if (pBufStruct->pReadDataFromBuf > pBufStruct->pEndBuf)
-        {
-            //  Переносим указатель на адрес начала буфера;  
-            pBufStruct->pReadDataFromBuf = pBufStruct->pBeginBuf;
-        }
-    }
+	pBuff_s->pStartBuff     = pBuffInit_s->pStartBuff;
+	pBuff_s->pEndBuff       = pBuff_s->pStartBuff + pBuffInit_s->buffSize - 1U;
+	pBuff_s->pWrite         = pBuff_s->pStartBuff;
+	pBuff_s->pRead          = pBuff_s->pStartBuff;
 }
 
-/**
- *  @brief  Функция проверяет количество байт в кольцевом буфере, которое не было 
- *          скопировано;
- *  @param  *pBufStruct:    Указатель на структуру, содержащую указатели для работы 
- *                          с кольцевым буфером;
- *  @return Количество необработаных байт в кольцевом буфере;
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      28-ноя-2018
+ *
+ * @brief    { function_description }
+ *
+ * @param        pBuff_s       Буфер s
+ * @param        pWriteData    Данные записи
+ * @param[in]    cnt           Счет
  */
-size_t RGBF_num_CheckDataNum(RGBF_ring_buf_s *pBufStruct)
+void
+RGBF_WriteInBuf(
+	rgbf_buff_pointers_s    *pBuff_s,
+	void                    *pWriteData,
+	size_t                   cnt)
 {
-    //  Если указатель на запись больше чем указатель на чтение:
-    if (pBufStruct->pWriteDataInBuf >= pBufStruct->pReadDataFromBuf)
-    {
-        return (pBufStruct->pWriteDataInBuf - pBufStruct->pReadDataFromBuf);
-    }
-        // Если указатель на запись меньше чем указатель на чтение (т.е. указатель 
-        // на запись "перешагнул" через конец буфера):
-    else
-    {
-        size_t bytesNum1, BytesNum2;
-        bytesNum1 = pBufStruct->pEndBuf - pBufStruct->pReadDataFromBuf;
-        BytesNum2 = pBufStruct->pWriteDataInBuf - pBufStruct->pBeginBuf;
-        
-        //  `+1` взялся из-за того, что байт на который указывает "pBufStruct->pWriteDataInBuf",
-        //  тоже должен учитываться;
-        return (bytesNum1 + BytesNum2 + 1);
-    }
+	while (cnt != 0u)
+	{
+		/* Проверка вылета за предела буфера  */
+		__RGBF_CheckWriteBufBeyond(pBuff_s);
+
+		/* Запись данных в кольцевой буфер */
+		*((uint8_t*)pBuff_s->pWrite++) = *((uint8_t*) pWriteData++);
+
+		/* Декремент счетчика */
+		cnt--;
+	}
 }
 
-/**
- *  @brief  Функция устанавливает указатели чтения и записи кольцевого буфера в 
- *          начало массива кольцевого буфера;
- *  @param  *pBufStruct:    Указатель на структуру, содержащую указатели для работы 
- *                          с кольцевым буфером;
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      28-ноя-2018
+ *
+ * @brief    { function_description }
+ *
+ * @param        pBuff_s      Буфер s
+ * @param        pReadData    Чтение данных
+ * @param[in]    cnt          Счет
  */
-void RGBF_ResetPointersToBegin(RGBF_ring_buf_s *pBufStruct)
+void
+RGBF_ReadFromBuf(
+	rgbf_buff_pointers_s    *pBuff_s,
+	void                    *pReadData,
+	size_t                   cnt)
 {
-    pBufStruct->pReadDataFromBuf = pBufStruct->pBeginBuf;
-    pBufStruct->pWriteDataInBuf = pBufStruct->pBeginBuf;
+	while (cnt != 0u)
+	{
+		__RBGF_CheckReadBufBeyond(pBuff_s);
+
+		*((uint8_t*) pReadData++) = *((uint8_t*)pBuff_s->pRead++);
+
+		cnt--;
+	}
 }
-//==============================================================================
-//******************************************************************************
+
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      28-ноя-2018
+ *
+ * @brief    { function_description }
+ *
+ * @param    pBuff_s    Буфер s
+ *
+ * @return    { description_of_the_return_value }
+ */
+void*
+RGBF_GetLastFromBuf(
+	rgbf_buff_pointers_s *pBuff_s)
+{
+	/* Проверка вылета за предела буфера  */
+	__RGBF_CheckWriteBufBeyond(pBuff_s);
+
+	if (pBuff_s->pWrite == pBuff_s->pStartBuff)
+	{
+		return (pBuff_s->pEndBuff);
+	}
+	else
+	{
+		return (pBuff_s->pWrite - 1U);
+	}
+}
 
 
-////////////////////////////////////////////////////////////////////////////////
-//  END OF FILE
-////////////////////////////////////////////////////////////////////////////////
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      28-ноя-2018
+ *
+ * @brief    { function_description }
+ *
+ * @param    pBuff_s    Буфер s
+ *
+ * @return    { description_of_the_return_value }
+ */
+size_t
+RGBF_GetCntDataInBuf(
+	rgbf_buff_pointers_s *pBuff_s)
+{
+
+	if (pBuff_s->pWrite >= pBuff_s->pRead)
+	{
+		return (pBuff_s->pWrite - pBuff_s->pRead);
+	}
+	else
+	{
+		return ((pBuff_s->pEndBuff - pBuff_s->pRead + 1U)
+				+ (pBuff_s->pWrite - pBuff_s->pStartBuff));
+	}
+
+}
+/*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
+
+
+/*#### |Begin| --> Секция - "Описание локальных функций" #####################*/
+void
+RGBF_CheckWriteBufBeyond(
+	rgbf_buff_pointers_s *pBuff_s)
+{
+	/* Если указатель на запись данных вышел за пределы буфера */
+	if (pBuff_s->pWrite > pBuff_s->pEndBuff)
+	{
+		/* Указатель перемещается на начало буфера */
+		pBuff_s->pWrite = pBuff_s->pStartBuff;
+	}
+}
+
+void
+RBGF_CheckReadBufBeyond(
+	rgbf_buff_pointers_s *pBuff_s)
+{
+	/* Если указатель на чтение данных вышел за пределы буфера */
+	if (pBuff_s->pRead > pBuff_s->pEndBuff)
+	{
+		/* Указатель перемещается на начало буфера */
+		pBuff_s->pRead = pBuff_s->pStartBuff;
+	}
+}
+/*#### |End  | <-- Секция - "Описание локальных функций" #####################*/
+
+
+/*############################################################################*/
+/*############################ END OF FILE  ##################################*/
+/*############################################################################*/
