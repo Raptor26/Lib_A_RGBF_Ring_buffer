@@ -41,16 +41,16 @@ int main(void)
             (void*) message_a, 
             (size_t)srtlen(message_a));
 
-        /* Чтение данных из буфера осуществляется следующим образом*/
+        /* Чтение данных из буфера осуществляется следующим образом */
         char readMessage_a[strlen(message_a)];
         RGBF_ReadFromBuf(
             &ringBuffForRx_s, 
             (void*) readMessage_a,
             RGBF_GetCntDataInBuf(&ringBuffForRx_s));
         /* Где функция "RGBF_GetCntDataInBuf()" возвращает количество байт в кольцевом буфере */
+        /* Теперь данные из кольцевого буфера записаны в массив "readMessage_a" */
         ...
     }
-
     return 1;
 }
 ```
